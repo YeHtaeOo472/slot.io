@@ -1,25 +1,36 @@
-const symbols = ["", "", "", "", "", ""];
+const canvas = document.getElementById('slotCanvas');
+const ctx = canvas.getContext('2d');
+
+const symbols = ['🍎', '🍌', '🍒', '🍇', '🍉', '🍓'];
+const reelPositions = [0, 0, 0];
+const reelHeight = 100;
+const reelWidth = 100;
 let autoSpinInterval;
 
-function spin() {
-  const reel1 = document.getElementById("reel1");
-  const reel2 = document.getElementById("reel2");
-  const reel3 = document.getElementById("reel3");
-  const result = document.getElementById("result");
+function drawSlotMachine() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#3b044d';
+  ctx.fillRect(50, 50, 400, 200);
 
-  const random1 = Math.floor(Math.random() * symbols.length);
-  const random2 = Math.floor(Math.random() * symbols.length);
-  const random3 = Math.floor(Math.random() * symbols.length);
-
-  reel1.textContent = symbols[random1];
-  reel2.textContent = symbols[random2];
-  reel3.textContent = symbols[random3];
-
-  if (symbols[random1] === symbols[random2] && symbols[random2] === symbols[random3]) {
-    result.textContent = " You Win! ";
-  } else {
-    result.textContent = "Try Again!";
+  for (let i = 0; i < 3; i++) {
+    const x = 75 + i * 150;
+    const y = 100;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(x, y, reelWidth, reelHeight);
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = '40px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(symbols[reelPositions[i]], x + reelWidth / 2, y + reelHeight / 2);
   }
+}
+
+function spin() {
+  for (let i = 0; i < 3; i++) {
+    reelPositions[i] = Math.floor(Math.random() * symbols.length);
+  }
+  drawSlotMachine();
+  checkResult();
 }
 
 function autoSpin() {
@@ -33,5 +44,14 @@ function autoSpin() {
 
 function maxBet() {
   spin();
-  alert("Max bet placed! Spinning the reels...");
+  alert('Max bet placed! Spinning the reels...');
 }
+
+function checkResult() {
+  const result = reelPositions.every(pos => pos === reelPositions[0]);
+  if (result) {
+    alert('🎉 You Win! 🎉');
+  }
+}
+
+drawSlotMachine();
